@@ -11,7 +11,9 @@ replacer = {
 
     S = S,
 
-    has = {},
+    has = {
+        default = minetest.get_modpath("default"),
+    },
 
     log = function(level, message, ...)
         message = message:format(...)

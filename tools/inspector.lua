@@ -36,5 +36,18 @@ minetest.register_tool("replacer:inspector", {
             replacer.tell(player, S("Unexpected pointed thing of type @1", pointed_thing.type or "nil"))
         end
     end,
-
 })
+
+local stick = replacer.resources.materials.stick
+local torch = replacer.resources.materials.torch
+
+if stick and torch then
+    minetest.register_craft({
+        output = "replacer:inspector",
+        type = "shaped",
+        recipe = {
+            {torch},
+            {stick},
+        }
+    })
+end
