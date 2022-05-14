@@ -110,6 +110,11 @@ function api.replacer.place(toolstack, player, pointed_thing)
 
     local leftover, placed_pos = minetest.item_place_node(itemstack, player, pointed_thing, param2)
     if placed_pos and leftover:is_empty() then
+        local placed_node = minetest.get_node(placed_pos)
+        if placed_node.param2 ~= param2 then
+            placed_node.param2 = param2
+            minetest.swap_node(placed_node)
+        end
         if not minetest.is_creative_enabled(player_name) then
             inv:remove_item("main", itemstack)
         end
@@ -212,6 +217,12 @@ function api.replacer.replace(toolstack, player, pointed_thing)
             minetest.pos_to_string(placed_pos))
 
     elseif leftover:is_empty() and placed_pos then
+        local placed_node = minetest.get_node(placed_pos)
+        if placed_node.param2 ~= to_place_param2 then
+            placed_node.param2 = to_place_param2
+            minetest.swap_node(placed_node)
+        end
+
         -- to_place_stack gets munged by item_place_node, for no good reason
         to_place_stack = ItemStack(to_place_name)
         inv:remove_item("main", to_place_stack)
