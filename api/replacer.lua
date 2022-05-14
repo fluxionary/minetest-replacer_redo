@@ -205,19 +205,20 @@ function api.replacer.replace(toolstack, player, pointed_thing)
         under = pos
     }
     local leftover, placed_pos = minetest.item_place_node(to_place_stack, player, place_pointed, to_place_param2)
-    placed_pos = minetest.pos_to_string(placed_pos)
 
-    if is_creative then
+    if is_creative and placed_pos then
         replacer.log("action", "%s (creative) replaced %s:%s with %s:%s @ %s",
-            player_name, current_node.name, current_node.param2, to_place_name, to_place_param2, placed_pos)
+            player_name, current_node.name, current_node.param2, to_place_name, to_place_param2,
+            minetest.pos_to_string(placed_pos))
 
-    elseif leftover:is_empty() then
+    elseif leftover:is_empty() and placed_pos then
         -- to_place_stack gets munged by item_place_node, for no good reason
         to_place_stack = ItemStack(to_place_name)
         inv:remove_item("main", to_place_stack)
 
         replacer.log("action", "%s replaced %s:%s with %s:%s @ %s",
-            player_name, current_node.name, current_node.param2, to_place_name, to_place_param2, placed_pos)
+            player_name, current_node.name, current_node.param2, to_place_name, to_place_param2,
+            minetest.pos_to_string(placed_pos))
     else
         -- failed to place, undo the break
         minetest.set_node(pos, current_node)
