@@ -109,14 +109,14 @@ function api.replacer.place(toolstack, player, pointed_thing)
     end
 
     local leftover, placed_pos = minetest.item_place_node(itemstack, player, pointed_thing, param2)
-    placed_pos = minetest.pos_to_string(placed_pos)
-    if leftover:is_empty() then
+    if placed_pos and leftover:is_empty() then
         if not minetest.is_creative_enabled(player_name) then
             inv:remove_item("main", itemstack)
         end
-        replacer.log("action", "%s placed %s @ %s", player_name, itemstring, placed_pos)
+        replacer.log("action", "%s placed %s @ %s", player_name, itemstring, minetest.pos_to_string(placed_pos))
+
     else
-        replacer.log("action", "%s failed to place %s @ %s", player_name, itemstring, placed_pos)
+        replacer.log("action", "%s failed to place %s @ %s", player_name, itemstring, minetest.pos_to_string(pos))
     end
 end
 
