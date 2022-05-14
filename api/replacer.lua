@@ -8,6 +8,7 @@ api.replacer.blacklist = { }
 function api.replacer.blacklist_item(itemstring)
     api.replacer.blacklist[itemstring] = true
 end
+
 api.replacer.blacklist_item("")
 api.replacer.blacklist_item("air")
 api.replacer.blacklist_item("ignore")
@@ -108,12 +109,12 @@ function api.replacer.place(toolstack, player, pointed_thing)
         end
     end
 
-    local leftover, placed_pos = minetest.item_place_node(itemstack, player, pointed_thing, param2)
+    local leftover, placed_pos = minetest.item_place_node(itemstack, player, pointed_thing)
     if placed_pos and leftover:is_empty() then
         local placed_node = minetest.get_node(placed_pos)
         if placed_node.param2 ~= param2 then
             placed_node.param2 = param2
-            minetest.swap_node(placed_node)
+            minetest.swap_node(placed_pos, placed_node)
         end
         if not minetest.is_creative_enabled(player_name) then
             inv:remove_item("main", itemstack)
@@ -209,7 +210,7 @@ function api.replacer.replace(toolstack, player, pointed_thing)
         above = pos,
         under = pos
     }
-    local leftover, placed_pos = minetest.item_place_node(to_place_stack, player, place_pointed, to_place_param2)
+    local leftover, placed_pos = minetest.item_place_node(to_place_stack, player, place_pointed)
 
     if is_creative and placed_pos then
         replacer.log("action", "%s (creative) replaced %s:%s with %s:%s @ %s",
@@ -220,7 +221,7 @@ function api.replacer.replace(toolstack, player, pointed_thing)
         local placed_node = minetest.get_node(placed_pos)
         if placed_node.param2 ~= to_place_param2 then
             placed_node.param2 = to_place_param2
-            minetest.swap_node(placed_node)
+            minetest.swap_node(placed_pos, placed_node)
         end
 
         -- to_place_stack gets munged by item_place_node, for no good reason
