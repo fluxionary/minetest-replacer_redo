@@ -35,8 +35,9 @@ replacer = {
 }
 
 replacer.dofile("settings")
-
+replacer.dofile("resources")
 replacer.dofile("util")
+
 replacer.dofile("api", "init")
 replacer.dofile("tools", "init")
 replacer.dofile("compat", "init")
