@@ -6,7 +6,7 @@ minetest.register_tool("replacer:inspector", {
     inventory_image = "replacer_inspector.png",
     liquids_pointable = true,
 
-    on_use = function(toolstack, player, pointed_thing)
+    on_use = function(_, player, pointed_thing)
         -- left click
         if not minetest.is_player(player) then
             return

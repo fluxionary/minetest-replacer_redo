@@ -13,12 +13,7 @@ minetest.register_tool("replacer:replacer", {
             return
         end
 
-        local keys = player:get_player_control()
-        if keys.sneak then
-            -- TODO: some sort of formspec for setting
-        else
-            return api.replace(toolstack, player, pointed_thing)
-        end
+        return api.replace(toolstack, player, pointed_thing)
     end,
 
     on_place = function(toolstack, player, pointed_thing)

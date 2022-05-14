@@ -12,6 +12,7 @@ read_globals = {
 	"vector", "ItemStack",
 	"dump", "minetest",
 	"VoxelManip", "VoxelArea",
+	"DIR_DELIM",
 
 }
 
