@@ -101,8 +101,9 @@ function api.replacer.place(toolstack, player, pointed_thing)
     local itemstack = ItemStack(itemstring)
     local node_desc = replacer.util.get_description(itemstack)
     local inv = player:get_inventory()
+    local is_creative = minetest.is_creative_enabled(player_name)
 
-    if not minetest.is_creative_enabled(player_name) then
+    if not is_creative then
         if not inv:contains_item("main", itemstack) then
             replacer.tell(player, S("Placement failed: you have no @1 in your inventory.", node_desc))
             return
@@ -116,8 +117,13 @@ function api.replacer.place(toolstack, player, pointed_thing)
             placed_node.param2 = param2
             minetest.swap_node(placed_pos, placed_node)
         end
-        if not minetest.is_creative_enabled(player_name) then
-            inv:remove_item("main", itemstack)
+        if not is_creative then
+            local removed = inv:remove_item("main", ItemStack(itemstring))
+            if removed:is_empty() then
+                replacer.log("action", "removed %s from %s's inventory", itemstring, player_name)
+            else
+                replacer.log("error", "failed to remove %s from %s's inventory", itemstring, player_name)
+            end
         end
         replacer.log("action", "%s placed %s @ %s", player_name, itemstring, minetest.pos_to_string(placed_pos))
 
@@ -226,7 +232,12 @@ function api.replacer.replace(toolstack, player, pointed_thing)
 
         -- to_place_stack gets munged by item_place_node, for no good reason
         to_place_stack = ItemStack(to_place_name)
-        inv:remove_item("main", to_place_stack)
+        local removed = inv:remove_item("main", to_place_stack)
+        if removed:is_empty() then
+            replacer.log("action", "removed %s from %s's inventory", to_place_name, player_name)
+        else
+            replacer.log("error", "failed to remove %s from %s's inventory", to_place_name, player_name)
+        end
 
         replacer.log("action", "%s replaced %s:%s with %s:%s @ %s",
             player_name, current_node.name, current_node.param2, to_place_name, to_place_param2,
