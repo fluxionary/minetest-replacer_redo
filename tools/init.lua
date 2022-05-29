@@ -1,2 +1,4 @@
-replacer.dofile("tools", "replacer")
+
+replacer.dofile("tools", "creative_replacer")
 replacer.dofile("tools", "inspector")
+replacer.dofile("tools", "replacer")

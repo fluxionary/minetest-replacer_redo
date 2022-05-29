@@ -1,11 +1,12 @@
 local S = replacer.S
 local api = replacer.api.replacer
 
-minetest.register_tool("replacer:replacer", {
+minetest.register_tool("replacer:creative_replacer", {
     description = S("Replacer"),
     short_description = S("Replacer"),
     inventory_image = "replacer_replacer.png",
-    liquids_pointable = false,
+    liquids_pointable = true,
+    groups = {not_in_creative_inventory = 1},
 
     on_use = function(toolstack, player, pointed_thing)
         -- left click (punch)
@@ -30,20 +31,3 @@ minetest.register_tool("replacer:replacer", {
         end
     end,
 })
-
-local chest = replacer.resources.materials.chest
-local steel = replacer.resources.materials.steel
-local gold = replacer.resources.materials.gold
-local crystal = replacer.resources.materials.crystal
-
-if chest and steel and gold and crystal then
-    minetest.register_craft({
-        output = "replacer:replacer",
-        type = "shaped",
-        recipe = {
-            {chest, "",     gold},
-            {"",    crystal, ""},
-            {steel, "",     chest},
-        }
-    })
-end

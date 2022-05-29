@@ -17,6 +17,35 @@ function api.replacer.is_blacklisted(itemstring)
     return api.replacer.blacklist[itemstring] or not minetest.registered_items[itemstring]
 end
 
+function api.replacer.check_tool(toolstack)
+    local tool_meta = toolstack:get_meta()
+    local itemstring = tool_meta:get_string("itemstring")
+
+    if api.replacer.is_blacklisted(itemstring) then
+        tool_meta:set_string("itemstring", "")
+        tool_meta:set_string("description", S("Replacer"))
+        return false
+    end
+
+    return true
+end
+
+function api.replacer.can_dig(player, pos, node_name)
+    local name = player:get_player_name()
+    if minetest.is_creative_enabled(name) then
+        return true
+    end
+
+    local def = minetest.registered_items[node_name]
+    if not def then
+        return false
+    end
+    if def.can_dig then
+        return def.can_dig(pos, player)
+    end
+    return minetest.get_item_group(name, "unbreakable") == 0
+end
+
 function api.replacer.copy(toolstack, player, pointed_thing)
     if pointed_thing.type ~= "node" then
         return
@@ -63,19 +92,6 @@ function api.replacer.copy(toolstack, player, pointed_thing)
     return toolstack
 end
 
-function api.replacer.check_tool(toolstack)
-    local tool_meta = toolstack:get_meta()
-    local itemstring = tool_meta:get_string("itemstring")
-
-    if api.replacer.is_blacklisted(itemstring) then
-        tool_meta:set_string("itemstring", "")
-        tool_meta:set_string("description", S("Replacer"))
-        return false
-    end
-
-    return true
-end
-
 function api.replacer.place(toolstack, player, pointed_thing)
     if pointed_thing.type ~= "node" then
         return
@@ -110,7 +126,15 @@ function api.replacer.place(toolstack, player, pointed_thing)
         end
     end
 
-    local leftover, placed_pos = minetest.item_place_node(itemstack, player, pointed_thing)
+    local def = minetest.registered_items[itemstring] or {}
+    local leftover, placed_pos
+    if def.on_place then
+        leftover = def.on_place(itemstack, player, pointed_thing)
+        placed_pos = pos
+    else
+        leftover, placed_pos = minetest.item_place_node(itemstack, player, pointed_thing)
+    end
+
     if placed_pos and leftover:is_empty() then
         local placed_node = minetest.get_node(placed_pos)
         if placed_node.param2 ~= param2 then
@@ -130,22 +154,6 @@ function api.replacer.place(toolstack, player, pointed_thing)
     else
         replacer.log("action", "%s failed to place %s @ %s", player_name, itemstring, minetest.pos_to_string(pos))
     end
-end
-
-function api.replacer.can_dig(player, pos, node_name)
-    local name = player:get_player_name()
-    if minetest.is_creative_enabled(name) then
-        return true
-    end
-
-    local def = minetest.registered_items[node_name]
-    if not def then
-        return false
-    end
-    if def.can_dig then
-        return def.can_dig(pos, player)
-    end
-    return minetest.get_item_group(name, "unbreakable") == 0
 end
 
 function api.replacer.replace(toolstack, player, pointed_thing)
@@ -211,19 +219,27 @@ function api.replacer.replace(toolstack, player, pointed_thing)
         return
     end
 
-    local place_pointed = {
-        type = "node",
-        above = pos,
-        under = pos
-    }
-    local leftover, placed_pos = minetest.item_place_node(to_place_stack, player, place_pointed)
+    local to_place_def = minetest.registered_items[to_place_name]
+
+    local leftover, placed_pos
+    if to_place_def.on_place then
+        leftover = to_place_def.on_place(to_place_stack, player, pointed_thing)
+        placed_pos = pos
+    else
+        leftover, placed_pos = minetest.item_place_node(to_place_stack, player, {
+            type = "node",
+            above = pos,
+            under = pos
+        })
+    end
+
 
     if is_creative and placed_pos then
         replacer.log("action", "%s (creative) replaced %s:%s with %s:%s @ %s",
             player_name, current_node.name, current_node.param2, to_place_name, to_place_param2,
             minetest.pos_to_string(placed_pos))
 
-    elseif leftover:is_empty() and placed_pos then
+    elseif leftover and leftover:is_empty() and placed_pos then
         local placed_node = minetest.get_node(placed_pos)
         if placed_node.param2 ~= to_place_param2 then
             placed_node.param2 = to_place_param2
