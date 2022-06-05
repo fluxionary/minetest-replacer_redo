@@ -19,7 +19,9 @@ minetest.register_tool("replacer:inspector", {
             local pos = pointed_thing.under
             local node = minetest.get_node(pos)
             local desc = replacer.util.get_description(node.name)
-            replacer.tell(player, S("Node: @1 param1=@2 param2=@3", desc, node.param1, node.param2))
+            replacer.tell(player, S("Node @@@1: @2  param1=@3 param2=@4",
+                minetest.pos_to_string(pos), desc, node.param1, node.param2)
+            )
 
         elseif pointed_thing.type == "object" then
             local obj = pointed_thing.ref
