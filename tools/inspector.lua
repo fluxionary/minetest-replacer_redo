@@ -19,7 +19,7 @@ minetest.register_tool("replacer:inspector", {
             local pos = pointed_thing.under
             local node = minetest.get_node(pos)
             local desc = replacer.util.get_description(node.name)
-            replacer.tell(player, S("Node @@@1: @2  param1=@3 param2=@4",
+            replacer.tell(player, S("Node @@@1: @2 param1=@3 param2=@4",
                 minetest.pos_to_string(pos), desc, node.param1, node.param2)
             )
 
@@ -34,8 +34,6 @@ minetest.register_tool("replacer:inspector", {
             end
             replacer.tell(player, S("Object: @1", lua_obj.name or S("Unknown object")))
 
-        else
-            replacer.tell(player, S("Unexpected pointed thing of type @1", pointed_thing.type or "nil"))
         end
     end,
 })
