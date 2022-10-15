@@ -4,6 +4,7 @@ local api = replacer.api
 api.replacer = {}
 
 api.replacer.blacklist = { }
+replacer.blacklist = api.replacer.blacklist -- backwards compatibility
 
 function api.replacer.blacklist_item(itemstring)
     api.replacer.blacklist[itemstring] = true
