@@ -1,4 +1,12 @@
-Replacers, but with fewer bugs and fewer "features"
+replacers, but with fewer bugs and fewer "features"
+
+the aim of this variant is to try to use the highest level APIs provided, to trigger all possible callbacks.
+
+#### API
+
+* `replacer.api.replacer.blacklist_item(itemstring)`
+
+  blacklists `itemstring` from use in the replacer.
 
 code license:
 * AGPL
