@@ -4,7 +4,7 @@ the aim of this variant is to try to use the highest level APIs provided, to tri
 
 #### API
 
-* `replacer.api.replacer.blacklist_item(itemstring)`
+* `replacer.api.blacklist_item(itemstring)`
 
   blacklists `itemstring` from use in the replacer.
 
