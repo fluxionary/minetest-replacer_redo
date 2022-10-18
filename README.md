@@ -25,7 +25,7 @@ additional features of the creaplacer:
   blacklist nodes w/ the given combination of groups from use in the replacer. e.g.
   ```lua
   groups = {
-      cracky = 2, 
+      cracky = 2,
       level = 2,
   }
   ```
@@ -40,7 +40,7 @@ additional features of the creaplacer:
   blacklist nodes w/ the given combination of groups being replaced w/ the replacer. e.g.
   ```lua
   groups = {
-      cracky = 2, 
+      cracky = 2,
       level = 2,
   }
   ```
@@ -49,7 +49,7 @@ additional features of the creaplacer:
 ##### over-rideable callbacks
 
 * `replacer.api.is_blacklisted(itemstring)`
-  
+
   override if you want to customize the logic of what can be blacklisted
 
 * `replacer.api.is_replacement_blacklisted(itemstring)`
