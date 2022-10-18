@@ -73,14 +73,14 @@ function api.creative_place(toolstack, player, pointed_thing)
         return
     end
 
-    local leftover, placed_pos
+    local placed_pos
 
     if to_place_def.on_place then
-        leftover = to_place_def.on_place(to_place_stack, player, pointed_thing)
+        to_place_def.on_place(to_place_stack, player, pointed_thing)
         placed_pos = pos
 
     else
-        leftover, placed_pos = minetest.item_place_node(to_place_stack, player, pointed_thing)
+        placed_pos = select(2, minetest.item_place_node(to_place_stack, player, pointed_thing))
     end
 
     if placed_pos then
@@ -176,15 +176,15 @@ function api.creative_replace(toolstack, player, pointed_thing)
     stuck_node_by_player_name[player_name] = nil
 
     -- luacheck: ignore leftover
-    local leftover, placed_pos
+    local placed_pos
     local to_place_pointed_thing = {type = "node", above = pos, under = pos}
 
     if to_place_def.on_place then
-        leftover = to_place_def.on_place(to_place_stack, player, to_place_pointed_thing)
+        to_place_def.on_place(to_place_stack, player, to_place_pointed_thing)
         placed_pos = pos
 
     else
-        leftover, placed_pos = minetest.item_place_node(to_place_stack, player, to_place_pointed_thing)
+        placed_pos = select(2, minetest.item_place_node(to_place_stack, player, to_place_pointed_thing))
     end
 
     if placed_pos then

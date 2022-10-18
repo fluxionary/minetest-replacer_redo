@@ -215,6 +215,5 @@ function api.replace(toolstack, player, pointed_thing)
         minetest.get_meta(pos):from_table(old_meta)
         player_inv:set_list("main", old_player_inventory)
         replacer.tell(player, S("replacement failed: could not place @1 for unknown reason", to_place_desc))
-        replacer.tell(player, f("[debug] %s %s %s %s", dump(to_place_stack:to_table()), dump(leftover:to_table()), dump(placed_pos), dump(to_place_pointed_thing)))
     end
 end

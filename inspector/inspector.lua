@@ -1,6 +1,6 @@
 local f = string.format
 
-local S = replacer.S
+local S = inspector.S
 
 local get_safe_short_description = futil.get_safe_short_description
 

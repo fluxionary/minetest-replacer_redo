@@ -26,5 +26,6 @@ stds.inspector = {
 		"inspector",
 	},
 	read_globals = {
+	    "futil",
 	},
 }
