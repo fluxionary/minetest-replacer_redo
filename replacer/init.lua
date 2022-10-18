@@ -36,9 +36,9 @@ replacer = {
     end,
 }
 
-replacer.dofile("api")
+replacer.dofile("api", "init")
 replacer.dofile("materials")
 replacer.dofile("replacer")
 replacer.dofile("creaplacer")
 replacer.dofile("craft")
-replacer.dofile("compat")
+replacer.dofile("compat", "init")
