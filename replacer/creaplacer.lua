@@ -1,11 +1,12 @@
 local S = replacer.S
-local api = replacer.api.replacer
+local api = replacer.api
 
-minetest.register_tool("replacer:creative_replacer", {
-    description = S("Replacer"),
-    short_description = S("Replacer"),
+minetest.register_tool("replacer:creaplacer", {
+    description = S("creaplacer"),
+    short_description = S("creaplacer"),
     inventory_image = "replacer_replacer.png^[multiply:red",
     liquids_pointable = true,
+    range = 10,
     groups = {not_in_creative_inventory = 1},
 
     on_use = function(toolstack, player, pointed_thing)
@@ -25,9 +26,9 @@ minetest.register_tool("replacer:creative_replacer", {
 
         local keys = player:get_player_control()
         if keys.sneak then
-            return api.copy(toolstack, player, pointed_thing)
+            return api.creative_copy(toolstack, player, pointed_thing)
         else
-            return api.place(toolstack, player, pointed_thing)
+            return api.creative_place(toolstack, player, pointed_thing)
         end
     end,
 })

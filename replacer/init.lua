@@ -1,9 +1,11 @@
+local f = string.format
+
 local modname = minetest.get_current_modname()
 local modpath = minetest.get_modpath(modname)
 local S = minetest.get_translator(modname)
 
 replacer = {
-    version = os.time({ year = 2022, month = 7, day = 11 }),
+    version = os.time({ year = 2022, month = 10, day = 17 }),
     fork = "fluxionary",
 
     modname = modname,
@@ -16,8 +18,8 @@ replacer = {
     },
 
     log = function(level, message, ...)
-        message = message:format(...)
-        minetest.log(level, ("[%s] %s"):format(modname, message))
+        message = f(message, ...)
+        minetest.log(level, f("[%s] %s", modname, message))
     end,
 
     tell = function(player, message, ...)
@@ -25,8 +27,8 @@ replacer = {
             player = player:get_player_name()
         end
 
-        message = message:format(...)
-	    minetest.chat_send_player(player, ("[%s] %s"):format(modname, message))
+        message = f(message, ...)
+	    minetest.chat_send_player(player, f("[%s] %s", modname, message))
     end,
 
     dofile = function(...)
@@ -34,10 +36,9 @@ replacer = {
     end,
 }
 
-replacer.dofile("settings")
-replacer.dofile("resources")
-replacer.dofile("util")
-
 replacer.dofile("api", "init")
-replacer.dofile("tools", "init")
+replacer.dofile("materials")
+replacer.dofile("replacer")
+replacer.dofile("creaplacer")
+replacer.dofile("craft")
 replacer.dofile("compat", "init")

@@ -1,5 +1,5 @@
 local S = replacer.S
-local api = replacer.api.replacer
+local api = replacer.api
 
 minetest.register_tool("replacer:replacer", {
     description = S("Replacer"),
@@ -30,20 +30,3 @@ minetest.register_tool("replacer:replacer", {
         end
     end,
 })
-
-local chest = replacer.resources.materials.chest
-local steel = replacer.resources.materials.steel
-local gold = replacer.resources.materials.gold
-local crystal = replacer.resources.materials.crystal
-
-if chest and steel and gold and crystal then
-    minetest.register_craft({
-        output = "replacer:replacer",
-        type = "shaped",
-        recipe = {
-            {chest, "",     gold},
-            {"",    crystal, ""},
-            {steel, "",     chest},
-        }
-    })
-end

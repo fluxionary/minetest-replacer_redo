@@ -1,0 +1,25 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.3.0
+    hooks:
+      - id: fix-byte-order-marker
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+      - id: mixed-line-ending
+        args: [ --fix=lf ]
+
+  - repo: local
+    hooks:
+      - id: luacheck_inspector
+        name: luacheck_inspector
+        language: system
+        entry: luacheck
+        pass_filenames: false
+        args: [--config,./inspector/.luacheckrc,-q,./inspector]
+      - id: luacheck_replacer
+        name: luacheck_replacer
+        language: system
+        entry: luacheck
+        pass_filenames: false
+        args: [--config,./replacer/.luacheckrc,-q,./replacer]
