@@ -80,7 +80,7 @@ function api.place(toolstack, player, pointed_thing)
         leftover, placed_pos = minetest.item_place_node(to_place_stack, player, pointed_thing)
     end
 
-    if placed_pos and (leftover:is_empty() or is_creative) then
+    if placed_pos and ((leftover and leftover:is_empty()) or is_creative) then
         -- placement succeeded
         local placed_node = minetest.get_node(placed_pos)
 
@@ -178,7 +178,7 @@ function api.replace(toolstack, player, pointed_thing)
         leftover, placed_pos = minetest.item_place_node(to_place_stack, player, to_place_pointed_thing)
     end
 
-    if placed_pos and (leftover:is_empty() or is_creative) then
+    if placed_pos and ((leftover and leftover:is_empty()) or is_creative) then
         -- placement succeeded
         local placed_node = minetest.get_node(placed_pos)
 
