@@ -1,16 +1,16 @@
 local api = replacer.api
 
 api.item_blacklist = {}
-api.groups_blacklist = {}
-api.item_replace_blacklist = {}
-api.groups_replace_blacklist = {}
+api.predicate_blacklist = {}
+api.replace_item_blacklist = {}
+api.replace_predicate_blacklist = {}
 
 function api.blacklist_item(itemstring)
     api.item_blacklist[itemstring] = true
 end
 
-function api.blacklist_groups(groups)
-    table.insert(api.groups_blacklist, groups)
+function api.blacklist_predicate(pred)
+    table.insert(api.predicate_blacklist, pred)
 end
 
 function api.is_blacklisted(itemstring)
@@ -24,20 +24,8 @@ function api.is_blacklisted(itemstring)
         return true
     end
 
-    local node_groups = def.groups
-
-    for _, groups in ipairs(api.groups_blacklist) do
-        local all = true
-
-        for group, value in pairs(groups) do
-            local node_value = node_groups[group]
-            if (not node_value) or node_value >= value then
-                all = false
-                break
-            end
-        end
-
-        if all then
+    for _, pred in ipairs(api.predicate_blacklist) do
+        if pred(itemstring, def) then
             return true
         end
     end
@@ -46,11 +34,11 @@ function api.is_blacklisted(itemstring)
 end
 
 function api.blacklist_item_replacement(itemstring)
-    api.item_replace_blacklist[itemstring] = true
+    api.replace_item_blacklist[itemstring] = true
 end
 
-function api.blacklist_groups_replacement(groups)
-    table.insert(api.groups_replace_blacklist, groups)
+function api.blacklist_predicate_replacement(pred)
+    table.insert(api.replace_predicate_blacklist, pred)
 end
 
 -- place allowed, replace not allowed
@@ -65,20 +53,8 @@ function api.is_replacement_blacklisted(itemstring)
         return true
     end
 
-    local node_groups = def.groups
-
-    for _, groups in ipairs(api.groups_replace_blacklist) do
-        local all = true
-
-        for group, value in pairs(groups) do
-            local node_value = node_groups[group]
-            if (not node_value) or node_value >= value then
-                all = false
-                break
-            end
-        end
-
-        if all then
+    for _, pred in ipairs(api.replace_predicate_blacklist) do
+        if pred(itemstring, def) then
             return true
         end
     end

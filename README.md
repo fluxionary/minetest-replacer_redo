@@ -20,31 +20,29 @@ additional features of the creaplacer:
 
   blacklists `itemstring` from use in the replacer.
 
-* `replacer.api.blacklist_groups(groups)`
+* `replacer.api.blacklist_predicate(function(itemstring, definition))`
 
-  blacklist nodes w/ the given combination of groups from use in the replacer. e.g.
+  blacklist nodes which match the supplied predicate, e.g.
   ```lua
-  groups = {
-      cracky = 2,
-      level = 2,
-  }
+  pred = function(itemstring, definition)
+      return definition.groups.level >= 2 and definition.groups.cracky <= 2
+  end
   ```
-  bans any node which has both cracky >= 2 and level >= 2
+  bans any node which has both cracky <= 2 and level >= 2
 
 * `replacer.api.blacklist_item_replacement(itemstring)`
 
   blacklists `itemstring` from being replaced w/ the replacer.
 
-* `replacer.api.blacklist_groups_replacement(groups)`
+* `replacer.api.blacklist_predicate_replacement(function(itemstring, definition))`
 
-  blacklist nodes w/ the given combination of groups being replaced w/ the replacer. e.g.
+  blacklist nodes which match the supplied predicate from being replaced, e.g.
   ```lua
-  groups = {
-      cracky = 2,
-      level = 2,
-  }
+  pred = function(itemstring, definition)
+      return definition.groups.level >= 2 and definition.groups.cracky <= 2
+  end
   ```
-  bans any node which has both cracky >= 2 and level >= 2
+  bans any node which has both cracky <= 2 and level >= 2 from being replaced.
 
 ##### over-rideable callbacks
 
