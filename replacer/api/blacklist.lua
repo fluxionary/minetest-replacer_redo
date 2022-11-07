@@ -43,7 +43,7 @@ end
 
 -- place allowed, replace not allowed
 function api.is_replacement_blacklisted(itemstring)
-	if api.item_replace_blacklist[itemstring] then
+	if api.replace_item_blacklist[itemstring] then
 		return true
 	end
 

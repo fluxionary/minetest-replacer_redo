@@ -6,7 +6,7 @@ local get_safe_short_description = futil.get_safe_short_description
 
 local api = replacer.api
 
-function api.check_tool(toolstack)
+function api.check_tool(toolstack, creative)
 	local tool_meta = toolstack:get_meta()
 	local itemstring = tool_meta:get_string("itemstring")
 

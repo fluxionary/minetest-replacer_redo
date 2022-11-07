@@ -40,6 +40,11 @@ function api.place(toolstack, player, pointed_thing)
 		return
 	end
 
+	if not api.check_tool(toolstack) then
+		replacer.tell(player, S("placement failed: replacer not configured. use sneak+right-click to copy a node."))
+		return
+	end
+
 	local tool_meta = toolstack:get_meta()
 	local to_place_name = tool_meta:get_string("itemstring")
 	local to_place_param2 = tool_meta:get_int("param2")
@@ -52,23 +57,30 @@ function api.place(toolstack, player, pointed_thing)
 	local is_creative = minetest.is_creative_enabled(player_name)
 
 	local pos = pointed_thing.above
-	local new_node = {name = to_place_name, param2 = to_place_param2}
-
-	if not api.check_tool(toolstack) then
-		replacer.tell(player, S("placement failed: replacer not configured. use sneak+right-click to copy a node."))
-		return
-	end
-
-	local can_place, reason = api.can_place(player, pos, new_node)
-	if not can_place then
-		replacer.tell(player, S("placement failed: @1.", reason))
-		return
-	end
+	local to_place_node = {name = to_place_name, param1 = 0, param2 = to_place_param2}
 
 	if not (is_creative or player_inv:contains_item("main", to_place_stack)) then
-		--local drops = futil.get_primary_drop(to_place_stack)
+		local drop = futil.get_primary_drop(to_place_stack)
+		if (drop
+			and drop ~= to_place_name
+			and player_inv:contains_item("main", drop)
+		) then
+			to_place_name = drop
+			to_place_stack = ItemStack(drop)
+			to_place_def = minetest.registered_nodes[to_place_name]
+			-- to_place_desc = get_safe_short_description(to_place_stack)
+			to_place_node = {name = to_place_name, param2 = to_place_param2}
 
-		replacer.tell(player, S("placement failed: you have no @1 in your inventory.", to_place_desc))
+		else
+			replacer.tell(player, S("placement failed: you have no @1 in your inventory.", to_place_desc))
+			return
+		end
+	end
+
+	local can_place, reason = api.can_place(player, pos, to_place_node)
+
+	if not can_place then
+		replacer.tell(player, S("placement failed: @1.", reason))
 		return
 	end
 
@@ -116,6 +128,11 @@ function api.replace(toolstack, player, pointed_thing)
 		return
 	end
 
+	if not api.check_tool(toolstack) then
+		replacer.tell(player, S("replacement failed: replacer not configured. use sneak+right-click to copy a node."))
+		return
+	end
+
 	local tool_meta = toolstack:get_meta()
 	local to_place_name = tool_meta:get_string("itemstring")
 	local to_place_param2 = tool_meta:get_int("param2")
@@ -130,21 +147,30 @@ function api.replace(toolstack, player, pointed_thing)
 	local pos = pointed_thing.under
 	local current_node = minetest.get_node(pos)
 
-	local new_node = {name = to_place_name, param1 = 0, param2 = to_place_param2}
-
-	if not api.check_tool(toolstack) then
-		replacer.tell(player, S("replacement failed: replacer not configured. use sneak+right-click to copy a node."))
-		return
-	end
-
-	local can_replace, reason = api.can_replace(player, pos, current_node, new_node)
-	if not can_replace then
-		replacer.tell(player, S("replacement failed: @1.", reason))
-		return
-	end
+	local to_place_node = {name = to_place_name, param1 = 0, param2 = to_place_param2}
 
 	if not (is_creative or player_inv:contains_item("main", to_place_stack)) then
-		replacer.tell(player, S("replacement failed: you have no @1 in your inventory.", to_place_desc))
+		local drop = futil.get_primary_drop(to_place_stack)
+		if (drop
+			and drop ~= to_place_name
+			and player_inv:contains_item("main", drop)
+		) then
+			to_place_name = drop
+			to_place_stack = ItemStack(drop)
+			to_place_def = minetest.registered_nodes[to_place_name]
+			to_place_desc = get_safe_short_description(to_place_stack)
+			to_place_node = {name = to_place_name, param2 = to_place_param2}
+
+		else
+			replacer.tell(player, S("placement failed: you have no @1 in your inventory.", to_place_desc))
+			return
+		end
+	end
+
+	local can_replace, reason = api.can_replace(player, pos, current_node, to_place_node)
+
+	if not can_replace then
+		replacer.tell(player, S("replacement failed: @1.", reason))
 		return
 	end
 

@@ -51,6 +51,11 @@ function api.creative_place(toolstack, player, pointed_thing)
 		return
 	end
 
+	if not api.check_tool(toolstack) then
+		replacer.tell(player, S("placement failed: replacer not configured. use sneak+right-click to copy a node."))
+		return
+	end
+
 	local tool_meta = toolstack:get_meta()
 	local to_place_name = tool_meta:get_string("itemstring")
 	local to_place_param2 = tool_meta:get_int("param2")
@@ -62,11 +67,6 @@ function api.creative_place(toolstack, player, pointed_thing)
 
 	local pos = pointed_thing.above
 	local new_node = {name = to_place_name, param2 = to_place_param2}
-
-	if not api.check_tool(toolstack) then
-		replacer.tell(player, S("placement failed: replacer not configured. use sneak+right-click to copy a node."))
-		return
-	end
 
 	if not api.can_place(player, pos, new_node) then
 		replacer.tell(player, S("placement failed: you cannot place @1 there.", to_place_desc))
@@ -109,6 +109,11 @@ function api.creative_replace(toolstack, player, pointed_thing)
 		return
 	end
 
+	if not api.check_tool(toolstack) then
+		replacer.tell(player, S("Replacement failed: replacer not configured. Use sneak+right-click to copy a node."))
+		return
+	end
+
 	local tool_meta = toolstack:get_meta()
 	local to_place_name = tool_meta:get_string("itemstring")
 	local to_place_param2 = tool_meta:get_int("param2")
@@ -125,11 +130,6 @@ function api.creative_replace(toolstack, player, pointed_thing)
 	local current_node = minetest.get_node(pos)
 
 	local new_node = {name = to_place_name, param1 = 0, param2 = to_place_param2}
-
-	if not api.check_tool(toolstack) then
-		replacer.tell(player, S("Replacement failed: replacer not configured. Use sneak+right-click to copy a node."))
-		return
-	end
 
 	local can_replace, reason = api.can_replace(player, pos, current_node, new_node)
 	if not can_replace then
