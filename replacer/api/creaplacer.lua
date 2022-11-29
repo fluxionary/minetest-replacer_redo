@@ -21,7 +21,7 @@ function api.creative_copy(toolstack, player, pointed_thing)
 	local desc = get_safe_short_description(nodestack)
 
 	if not api.can_copy(player, pos, node) then
-		replacer.chat_send_player(player, S("you cannot copy @1", desc))
+		replacer.chat_send_player(player, "you cannot copy @1", desc)
 		return
 	end
 
@@ -54,7 +54,7 @@ function api.creative_place(toolstack, player, pointed_thing)
 	if not api.check_tool(toolstack) then
 		replacer.chat_send_player(
 			player,
-			S("placement failed: replacer not configured. use sneak+right-click to copy a node.")
+			"placement failed: replacer not configured. use sneak+right-click to copy a node."
 		)
 		return
 	end
@@ -72,7 +72,7 @@ function api.creative_place(toolstack, player, pointed_thing)
 	local new_node = { name = to_place_name, param2 = to_place_param2 }
 
 	if not api.can_place(player, pos, new_node) then
-		replacer.chat_send_player(player, S("placement failed: you cannot place @1 there.", to_place_desc))
+		replacer.chat_send_player(player, "placement failed: you cannot place @1 there.", to_place_desc)
 		return
 	end
 
@@ -113,7 +113,7 @@ function api.creative_replace(toolstack, player, pointed_thing)
 	if not api.check_tool(toolstack) then
 		replacer.chat_send_player(
 			player,
-			S("Replacement failed: replacer not configured. Use sneak+right-click to copy a node.")
+			"Replacement failed: replacer not configured. Use sneak+right-click to copy a node."
 		)
 		return
 	end
@@ -137,7 +137,7 @@ function api.creative_replace(toolstack, player, pointed_thing)
 
 	local can_replace, reason = api.can_replace(player, pos, current_node, new_node)
 	if not can_replace then
-		replacer.chat_send_player(player, S("replacement failed: @1.", reason))
+		replacer.chat_send_player(player, "replacement failed: @1.", reason)
 		return
 	end
 
@@ -172,11 +172,11 @@ function api.creative_replace(toolstack, player, pointed_thing)
 			stuck_node_by_player_name[player_name] = nil
 			minetest.remove_node(pos)
 			if minetest.get_node(pos).name ~= "air" then
-				replacer.chat_send_player(player, S("replacement failed: removal failed for unknown reason."))
+				replacer.chat_send_player(player, "replacement failed: removal failed for unknown reason.")
 				return
 			end
 		else
-			replacer.chat_send_player(player, S("replacement failed: try again to force replacement (dangerous!)."))
+			replacer.chat_send_player(player, "replacement failed: try again to force replacement (dangerous!).")
 			stuck_node_by_player_name[player_name] = spos
 			return
 		end
@@ -221,6 +221,6 @@ function api.creative_replace(toolstack, player, pointed_thing)
 		-- failed to place, undo the break
 		minetest.set_node(pos, current_node)
 		minetest.get_meta(pos):from_table(old_node_meta)
-		replacer.chat_send_player(player, S("replacement failed: @1 for unknown reasons", to_place_desc))
+		replacer.chat_send_player(player, "replacement failed: @1 for unknown reasons", to_place_desc)
 	end
 end

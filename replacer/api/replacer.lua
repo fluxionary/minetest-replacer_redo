@@ -19,7 +19,7 @@ function api.copy(toolstack, player, pointed_thing)
 	local desc = get_safe_short_description(nodestack)
 
 	if not api.can_copy(player, pos, node) then
-		replacer.chat_send_all(player, S("you cannot copy @1", desc))
+		replacer.chat_send_all(player, "you cannot copy @1", desc)
 		return
 	end
 
@@ -40,7 +40,7 @@ function api.place(toolstack, player, pointed_thing)
 	if not api.check_tool(toolstack) then
 		replacer.chat_send_all(
 			player,
-			S("placement failed: replacer not configured. use sneak+right-click to copy a node.")
+			"placement failed: replacer not configured. use sneak+right-click to copy a node."
 		)
 		return
 	end
@@ -68,7 +68,7 @@ function api.place(toolstack, player, pointed_thing)
 			-- to_place_desc = get_safe_short_description(to_place_stack)
 			to_place_node = { name = to_place_name, param2 = to_place_param2 }
 		else
-			replacer.chat_send_all(player, S("placement failed: you have no @1 in your inventory.", to_place_desc))
+			replacer.chat_send_all(player, "placement failed: you have no @1 in your inventory.", to_place_desc)
 			return
 		end
 	end
@@ -76,7 +76,7 @@ function api.place(toolstack, player, pointed_thing)
 	local can_place, reason = api.can_place(player, pos, to_place_node)
 
 	if not can_place then
-		replacer.chat_send_all(player, S("placement failed: @1.", reason))
+		replacer.chat_send_all(player, "placement failed: @1.", reason)
 		return
 	end
 
@@ -124,7 +124,7 @@ function api.replace(toolstack, player, pointed_thing)
 	if not api.check_tool(toolstack) then
 		replacer.chat_send_all(
 			player,
-			S("replacement failed: replacer not configured. use sneak+right-click to copy a node.")
+			"replacement failed: replacer not configured. use sneak+right-click to copy a node."
 		)
 		return
 	end
@@ -154,7 +154,7 @@ function api.replace(toolstack, player, pointed_thing)
 			to_place_desc = get_safe_short_description(to_place_stack)
 			to_place_node = { name = to_place_name, param2 = to_place_param2 }
 		else
-			replacer.chat_send_all(player, S("placement failed: you have no @1 in your inventory.", to_place_desc))
+			replacer.chat_send_all(player, "placement failed: you have no @1 in your inventory.", to_place_desc)
 			return
 		end
 	end
@@ -162,7 +162,7 @@ function api.replace(toolstack, player, pointed_thing)
 	local can_replace, reason = api.can_replace(player, pos, current_node, to_place_node)
 
 	if not can_replace then
-		replacer.chat_send_all(player, S("replacement failed: @1.", reason))
+		replacer.chat_send_all(player, "replacement failed: @1.", reason)
 		return
 	end
 
@@ -189,7 +189,7 @@ function api.replace(toolstack, player, pointed_thing)
 	local was_dug = minetest.node_dig(pos, current_node, player)
 	if not was_dug then
 		player_inv:set_list("main", old_player_inventory)
-		replacer.chat_send_all(player, S("replacement failed: digging failed for unknown reason."))
+		replacer.chat_send_all(player, "replacement failed: digging failed for unknown reason.")
 		return
 	end
 
@@ -250,6 +250,6 @@ function api.replace(toolstack, player, pointed_thing)
 		minetest.swap_node(pos, current_node)
 		minetest.get_meta(pos):from_table(old_meta)
 		player_inv:set_list("main", old_player_inventory)
-		replacer.chat_send_all(player, S("replacement failed: could not place @1 for unknown reason", to_place_desc))
+		replacer.chat_send_all(player, "replacement failed: could not place @1 for unknown reason", to_place_desc)
 	end
 end
