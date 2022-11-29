@@ -17,8 +17,7 @@ minetest.register_tool("inspector:inspector", {
 		end
 
 		if pointed_thing.type == "nothing" then
-			inspector.tell(player, S("nothing"))
-
+			inspector.chat_send_player(player, S("nothing"))
 		elseif pointed_thing.type == "node" then
 			local pos = pointed_thing.under
 			local node = minetest.get_node(pos)
@@ -26,24 +25,29 @@ minetest.register_tool("inspector:inspector", {
 			local desc
 			if stack:is_known() then
 				desc = get_safe_short_description(node.name)
-
 			else
 				desc = f("%s (%s)", get_safe_short_description(node.name), node.name)
 			end
 
-			inspector.tell(player, S("node @@@1: @2 param1=@3 param2=@4",
-				minetest.pos_to_string(pos), desc, node.param1, node.param2)
+			inspector.chat_send_player(
+				player,
+				S("node @@@1: @2 param1=@3 param2=@4", minetest.pos_to_string(pos), desc, node.param1, node.param2)
 			)
-
 		elseif pointed_thing.type == "object" then
 			local obj = pointed_thing.ref
 
 			if minetest.is_player(obj) then
-				inspector.tell(player, S("player: @1", obj:get_player_name()))
-
+				inspector.chat_send_player(player, S("player: @1", obj:get_player_name()))
 			else
 				local lua_entity = obj:get_luaentity()
-				inspector.tell(player, S("luaentity: @1", lua_entity.name or "unknown???"))
+				if lua_entity then
+					inspector.chat_send_player(player, S("luaentity: @1", lua_entity.name or "unknown???"))
+				else
+					inspector.chat_send_player(
+						player,
+						S("impossible. an object which is neither a player nor a lua entity?")
+					)
+				end
 			end
 		end
 	end,

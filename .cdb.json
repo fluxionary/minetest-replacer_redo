@@ -1,0 +1,11 @@
+{
+    "type": "MOD",
+    "name": "replacer",
+    "title": "replacer (flux's redo)",
+    "short_description": "provides a node replacement tool and a node inspection tool. slightly different than the other replacer variants.",
+    "repo": "https://github.com/fluxionary/minetest-replacer_redo.git",
+    "website": "https://github.com/fluxionary/minetest-replacer_redo",
+    "issue_tracker": "https://github.com/fluxionary/minetest-replacer_redo/issues",
+    "license": "AGPL-3.0-or-later",
+    "media_license": "CC-BY-SA-4.0"
+}

@@ -19,7 +19,7 @@ function api.copy(toolstack, player, pointed_thing)
 	local desc = get_safe_short_description(nodestack)
 
 	if not api.can_copy(player, pos, node) then
-		replacer.tell(player, S("you cannot copy @1", desc))
+		replacer.chat_send_all(player, S("you cannot copy @1", desc))
 		return
 	end
 
@@ -27,10 +27,7 @@ function api.copy(toolstack, player, pointed_thing)
 	meta:set_string("itemstring", node.name)
 	meta:set_int("param2", node.param2)
 
-	meta:set_string(
-		"description",
-		table.concat({S("replacer"), desc, node.name, f("param2=%i", node.param2)}, "\n")
-	)
+	meta:set_string("description", table.concat({ S("replacer"), desc, node.name, f("param2=%i", node.param2) }, "\n"))
 
 	return toolstack
 end
@@ -41,7 +38,10 @@ function api.place(toolstack, player, pointed_thing)
 	end
 
 	if not api.check_tool(toolstack) then
-		replacer.tell(player, S("placement failed: replacer not configured. use sneak+right-click to copy a node."))
+		replacer.chat_send_all(
+			player,
+			S("placement failed: replacer not configured. use sneak+right-click to copy a node.")
+		)
 		return
 	end
 
@@ -57,22 +57,18 @@ function api.place(toolstack, player, pointed_thing)
 	local is_creative = minetest.is_creative_enabled(player_name)
 
 	local pos = pointed_thing.above
-	local to_place_node = {name = to_place_name, param1 = 0, param2 = to_place_param2}
+	local to_place_node = { name = to_place_name, param1 = 0, param2 = to_place_param2 }
 
 	if not (is_creative or player_inv:contains_item("main", to_place_stack)) then
 		local drop = futil.get_primary_drop(to_place_stack)
-		if (drop
-			and drop ~= to_place_name
-			and player_inv:contains_item("main", drop)
-		) then
+		if drop and drop ~= to_place_name and player_inv:contains_item("main", drop) then
 			to_place_name = drop
 			to_place_stack = ItemStack(drop)
 			to_place_def = minetest.registered_nodes[to_place_name]
 			-- to_place_desc = get_safe_short_description(to_place_stack)
-			to_place_node = {name = to_place_name, param2 = to_place_param2}
-
+			to_place_node = { name = to_place_name, param2 = to_place_param2 }
 		else
-			replacer.tell(player, S("placement failed: you have no @1 in your inventory.", to_place_desc))
+			replacer.chat_send_all(player, S("placement failed: you have no @1 in your inventory.", to_place_desc))
 			return
 		end
 	end
@@ -80,7 +76,7 @@ function api.place(toolstack, player, pointed_thing)
 	local can_place, reason = api.can_place(player, pos, to_place_node)
 
 	if not can_place then
-		replacer.tell(player, S("placement failed: @1.", reason))
+		replacer.chat_send_all(player, S("placement failed: @1.", reason))
 		return
 	end
 
@@ -89,7 +85,6 @@ function api.place(toolstack, player, pointed_thing)
 	if to_place_def.on_place then
 		leftover = to_place_def.on_place(to_place_stack, player, pointed_thing)
 		placed_pos = pos
-
 	else
 		leftover, placed_pos = minetest.item_place_node(to_place_stack, player, pointed_thing)
 	end
@@ -110,14 +105,12 @@ function api.place(toolstack, player, pointed_thing)
 
 			if removed:is_empty() then
 				replacer.log("error", "failed to remove %s from %s's inventory", to_place_name, player_name)
-
 			else
 				replacer.log("action", "removed %s from %s's inventory", to_place_name, player_name)
 			end
 		end
 
 		replacer.log("action", "%s placed %s @ %s", player_name, to_place_name, pos_to_string(placed_pos))
-
 	else
 		replacer.log("action", "%s failed to place %s @ %s", player_name, to_place_name, pos_to_string(pos))
 	end
@@ -129,7 +122,10 @@ function api.replace(toolstack, player, pointed_thing)
 	end
 
 	if not api.check_tool(toolstack) then
-		replacer.tell(player, S("replacement failed: replacer not configured. use sneak+right-click to copy a node."))
+		replacer.chat_send_all(
+			player,
+			S("replacement failed: replacer not configured. use sneak+right-click to copy a node.")
+		)
 		return
 	end
 
@@ -147,22 +143,18 @@ function api.replace(toolstack, player, pointed_thing)
 	local pos = pointed_thing.under
 	local current_node = minetest.get_node(pos)
 
-	local to_place_node = {name = to_place_name, param1 = 0, param2 = to_place_param2}
+	local to_place_node = { name = to_place_name, param1 = 0, param2 = to_place_param2 }
 
 	if not (is_creative or player_inv:contains_item("main", to_place_stack)) then
 		local drop = futil.get_primary_drop(to_place_stack)
-		if (drop
-			and drop ~= to_place_name
-			and player_inv:contains_item("main", drop)
-		) then
+		if drop and drop ~= to_place_name and player_inv:contains_item("main", drop) then
 			to_place_name = drop
 			to_place_stack = ItemStack(drop)
 			to_place_def = minetest.registered_nodes[to_place_name]
 			to_place_desc = get_safe_short_description(to_place_stack)
-			to_place_node = {name = to_place_name, param2 = to_place_param2}
-
+			to_place_node = { name = to_place_name, param2 = to_place_param2 }
 		else
-			replacer.tell(player, S("placement failed: you have no @1 in your inventory.", to_place_desc))
+			replacer.chat_send_all(player, S("placement failed: you have no @1 in your inventory.", to_place_desc))
 			return
 		end
 	end
@@ -170,16 +162,22 @@ function api.replace(toolstack, player, pointed_thing)
 	local can_replace, reason = api.can_replace(player, pos, current_node, to_place_node)
 
 	if not can_replace then
-		replacer.tell(player, S("replacement failed: @1.", reason))
+		replacer.chat_send_all(player, S("replacement failed: @1.", reason))
 		return
 	end
 
 	if current_node.name == to_place_name then
 		if current_node.param2 ~= to_place_param2 then
 			-- just tweak param2
-			minetest.swap_node(pos, {name = to_place_name, param2 = to_place_param2})
-			replacer.log("action", "%s set param2=%s of %s @ %s",
-				player_name, to_place_param2, to_place_name, pos_to_string(pos))
+			minetest.swap_node(pos, { name = to_place_name, param2 = to_place_param2 })
+			replacer.log(
+				"action",
+				"%s set param2=%s of %s @ %s",
+				player_name,
+				to_place_param2,
+				to_place_name,
+				pos_to_string(pos)
+			)
 		end
 		-- nothing to do
 		return
@@ -191,17 +189,16 @@ function api.replace(toolstack, player, pointed_thing)
 	local was_dug = minetest.node_dig(pos, current_node, player)
 	if not was_dug then
 		player_inv:set_list("main", old_player_inventory)
-		replacer.tell(player, S("replacement failed: digging failed for unknown reason."))
+		replacer.chat_send_all(player, S("replacement failed: digging failed for unknown reason."))
 		return
 	end
 
 	local leftover, placed_pos
-	local to_place_pointed_thing = {type = "node", above = pos, under = pos}
+	local to_place_pointed_thing = { type = "node", above = pos, under = pos }
 
 	if to_place_def.on_place then
 		leftover = to_place_def.on_place(to_place_stack, player, to_place_pointed_thing)
 		placed_pos = pos
-
 	else
 		leftover, placed_pos = minetest.item_place_node(to_place_stack, player, to_place_pointed_thing)
 	end
@@ -222,26 +219,37 @@ function api.replace(toolstack, player, pointed_thing)
 			local removed = player_inv:remove_item("main", to_place_stack)
 			if removed:is_empty() then
 				replacer.log("error", "failed to remove %s from %s's inventory", to_place_name, player_name)
-
 			else
 				replacer.log("action", "removed %s from %s's inventory", to_place_name, player_name)
 			end
 
-			replacer.log("action", "%s replaced %s:%s with %s:%s @ %s",
-				player_name, current_node.name, current_node.param2, to_place_name, to_place_param2,
-				pos_to_string(placed_pos))
-
+			replacer.log(
+				"action",
+				"%s replaced %s:%s with %s:%s @ %s",
+				player_name,
+				current_node.name,
+				current_node.param2,
+				to_place_name,
+				to_place_param2,
+				pos_to_string(placed_pos)
+			)
 		else
-			replacer.log("action", "%s (creative) replaced %s:%s with %s:%s @ %s",
-				player_name, current_node.name, current_node.param2, to_place_name, to_place_param2,
-				pos_to_string(placed_pos))
+			replacer.log(
+				"action",
+				"%s (creative) replaced %s:%s with %s:%s @ %s",
+				player_name,
+				current_node.name,
+				current_node.param2,
+				to_place_name,
+				to_place_param2,
+				pos_to_string(placed_pos)
+			)
 		end
-
 	else
 		-- failed to place, undo the break
 		minetest.swap_node(pos, current_node)
 		minetest.get_meta(pos):from_table(old_meta)
 		player_inv:set_list("main", old_player_inventory)
-		replacer.tell(player, S("replacement failed: could not place @1 for unknown reason", to_place_desc))
+		replacer.chat_send_all(player, S("replacement failed: could not place @1 for unknown reason", to_place_desc))
 	end
 end

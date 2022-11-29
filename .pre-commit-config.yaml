@@ -5,21 +5,30 @@ repos:
       - id: fix-byte-order-marker
       - id: end-of-file-fixer
       - id: trailing-whitespace
-
       - id: mixed-line-ending
         args: [ --fix=lf ]
 
   - repo: local
     hooks:
+      - id: stylua
+        name: stylua
+        language: system
+        entry: stylua
+        pass_filenames: true
+        types: [ file, lua ]
       - id: luacheck_inspector
         name: luacheck_inspector
         language: system
         entry: luacheck
-        pass_filenames: false
-        args: [--config,./inspector/.luacheckrc,-q,./inspector]
+        pass_filenames: true
+        files: ^inspector/
+        types: [ file, lua ]
+        args: [ --config, ./inspector/.luacheckrc, -q ]
       - id: luacheck_replacer
         name: luacheck_replacer
         language: system
         entry: luacheck
-        pass_filenames: false
-        args: [--config,./replacer/.luacheckrc,-q,./replacer]
+        pass_filenames: true
+        files: ^replacer/
+        types: [ file, lua ]
+        args: [ --config, ./replacer/.luacheckrc, -q ]
