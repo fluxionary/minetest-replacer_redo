@@ -8,9 +8,9 @@ if chest and steel and gold and crystal then
 		output = "replacer:replacer",
 		type = "shaped",
 		recipe = {
-			{chest, "", gold},
-			{"", crystal, ""},
-			{steel, "", chest},
-		}
+			{ chest, "", gold },
+			{ "", crystal, "" },
+			{ steel, "", chest },
+		},
 	})
 end

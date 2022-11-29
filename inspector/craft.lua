@@ -6,8 +6,8 @@ if stick and torch then
 		output = "replacer:inspector",
 		type = "shaped",
 		recipe = {
-			{torch},
-			{stick},
-		}
+			{ torch },
+			{ stick },
+		},
 	})
 end

@@ -7,7 +7,7 @@ minetest.register_tool("replacer:creaplacer", {
 	inventory_image = "replacer_replacer.png^[multiply:red",
 	liquids_pointable = true,
 	range = 10,
-	groups = {not_in_creative_inventory = 1},
+	groups = { not_in_creative_inventory = 1 },
 
 	on_use = function(toolstack, player, pointed_thing)
 		-- left click (punch)
