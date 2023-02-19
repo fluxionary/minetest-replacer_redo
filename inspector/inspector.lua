@@ -19,23 +19,32 @@ minetest.register_tool("inspector:inspector", {
 		if pointed_thing.type == "nothing" then
 			inspector.chat_send_player(player, "nothing")
 		elseif pointed_thing.type == "node" then
-			local pos = pointed_thing.under
-			local node = minetest.get_node(pos)
-			local stack = ItemStack(node)
-			local desc
-			if stack:is_known() then
-				desc = get_safe_short_description(node.name)
+			local under_pos = pointed_thing.under
+			local under_node = minetest.get_node(under_pos)
+			local under_name = under_node.name
+			local under_def = minetest.registered_nodes[under_name]
+
+			local desc, light_level
+			if under_def then
+				desc = get_safe_short_description(under_node.name)
+				if under_def.paramtype == "light" then
+					light_level = minetest.get_node_light(under_pos, minetest.get_timeofday())
+				else
+					light_level = minetest.get_node_light(pointed_thing.above, minetest.get_timeofday())
+				end
 			else
-				desc = f("%s (%s)", get_safe_short_description(node.name), node.name)
+				desc = f("%s (%s)", under_name, get_safe_short_description(under_name))
+				light_level = minetest.get_node_light(pointed_thing.above, minetest.get_timeofday())
 			end
 
 			inspector.chat_send_player(
 				player,
-				"node @@@1: @2 param1=@3 param2=@4",
-				minetest.pos_to_string(pos),
+				"node @@@1: @2 param1=@3 param2=@4 light=@5",
+				minetest.pos_to_string(under_pos),
 				desc,
-				node.param1,
-				node.param2
+				under_node.param1,
+				under_node.param2,
+				light_level
 			)
 		elseif pointed_thing.type == "object" then
 			local obj = pointed_thing.ref
