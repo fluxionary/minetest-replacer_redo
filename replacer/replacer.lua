@@ -13,6 +13,11 @@ minetest.register_tool("replacer:replacer", {
 			return
 		end
 
+		if pointed_thing.type == "object" then
+			pointed_thing.ref:punch(player)
+			return
+		end
+
 		return api.replace(toolstack, player, pointed_thing)
 	end,
 
