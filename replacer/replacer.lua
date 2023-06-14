@@ -14,7 +14,7 @@ minetest.register_tool("replacer:replacer", {
 		end
 
 		if pointed_thing.type == "object" then
-			pointed_thing.ref:punch(player)
+			pointed_thing.ref:punch(player, 0, {})
 			return
 		end
 
