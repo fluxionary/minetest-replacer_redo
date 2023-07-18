@@ -159,6 +159,10 @@ function api.replace(toolstack, player, pointed_thing)
 		end
 	end
 
+	if not to_place_def then
+		replacer.chat_send_player(player, "placement failed: @1 is not a known node", to_place_name)
+	end
+
 	local can_replace, reason = api.can_replace(player, pos, current_node, to_place_node)
 
 	if not can_replace then
