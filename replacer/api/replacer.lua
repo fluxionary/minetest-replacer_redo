@@ -136,6 +136,10 @@ function api.replace(toolstack, player, pointed_thing)
 	local to_place_def = minetest.registered_nodes[to_place_name]
 	local to_place_desc = get_safe_short_description(to_place_stack)
 
+	if not to_place_def then
+		replacer.chat_send_player(player, "placement failed: @1 is not a known node", to_place_name)
+	end
+
 	local player_name = player:get_player_name()
 	local player_inv = player:get_inventory()
 	local is_creative = minetest.is_creative_enabled(player_name)
