@@ -69,7 +69,7 @@ additional features of the creaplacer:
 #### license
 
 code license:
-* AGPL
+* LGPL
 
 media license:
 * replacer_inspector.png (C) Sokomine GPLv3+
