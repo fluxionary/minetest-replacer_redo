@@ -4,6 +4,27 @@ local S = inspector.S
 
 local get_safe_short_description = futil.get_safe_short_description
 
+function inspector.get_luaentity_description(ent)
+	if not ent.name then
+		return "<unknown?>"
+	elseif ent.name == "__builtin:item" then
+		return f(
+			"__builtin:item [%s] dropped %.1fs ago by %s",
+			ent.itemstring or "??",
+			ent.age or -math.huge,
+			ent.dropped_by or "???"
+		)
+	elseif ent.owner then
+		if ent.protected or ent.dreamcatcher or ent.locked then
+			return f("%s owned by %s (protected)", ent.name, ent.owner)
+		else
+			return f("%s owned by %s", ent.name, ent.owner)
+		end
+	else
+		return ent.name
+	end
+end
+
 minetest.register_tool("inspector:inspector", {
 	description = S("Inspector"),
 	short_description = S("Inspector"),
@@ -54,7 +75,7 @@ minetest.register_tool("inspector:inspector", {
 			else
 				local lua_entity = obj:get_luaentity()
 				if lua_entity then
-					inspector.chat_send_player(player, "luaentity: @1", lua_entity.name or "unknown???")
+					inspector.chat_send_player(player, "luaentity: @1", inspector.get_luaentity_description(lua_entity))
 				else
 					inspector.chat_send_player(
 						player,
