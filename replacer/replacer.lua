@@ -9,7 +9,7 @@ minetest.register_tool("replacer:replacer", {
 
 	on_use = function(toolstack, player, pointed_thing)
 		-- left click (punch)
-		if not minetest.is_player(player) then
+		if not futil.is_player(player) then
 			return
 		end
 
@@ -23,7 +23,7 @@ minetest.register_tool("replacer:replacer", {
 
 	on_place = function(toolstack, player, pointed_thing)
 		-- rightclick
-		if not minetest.is_player(player) then
+		if not futil.is_player(player) then
 			return
 		end
 

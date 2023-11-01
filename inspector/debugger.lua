@@ -13,7 +13,7 @@ minetest.register_tool("inspector:debugger", {
 
 	on_use = function(_, player, pointed_thing)
 		-- left click
-		if not minetest.is_player(player) then
+		if not futil.is_player(player) then
 			return
 		end
 
@@ -52,7 +52,7 @@ minetest.register_tool("inspector:debugger", {
 		elseif pointed_thing.type == "object" then
 			local obj = pointed_thing.ref
 
-			if minetest.is_player(obj) then
+			if futil.is_player(obj) then
 				local meta = obj:get_meta()
 				inspector.chat_send_player(
 					player,

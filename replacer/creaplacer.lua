@@ -11,7 +11,7 @@ minetest.register_tool("replacer:creaplacer", {
 
 	on_use = function(toolstack, player, pointed_thing)
 		-- left click (punch)
-		if not (minetest.is_player(player) and minetest.is_creative_enabled(player:get_player_name())) then
+		if not (futil.is_player(player) and minetest.is_creative_enabled(player:get_player_name())) then
 			return
 		end
 
@@ -20,7 +20,7 @@ minetest.register_tool("replacer:creaplacer", {
 
 	on_place = function(toolstack, player, pointed_thing)
 		-- rightclick
-		if not (minetest.is_player(player) and minetest.is_creative_enabled(player:get_player_name())) then
+		if not (futil.is_player(player) and minetest.is_creative_enabled(player:get_player_name())) then
 			return
 		end
 
