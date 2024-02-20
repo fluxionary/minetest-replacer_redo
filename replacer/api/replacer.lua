@@ -4,6 +4,7 @@ local pos_to_string = minetest.pos_to_string
 
 local S = replacer.S
 
+local dedupe_by_player = futil.dedupe_by_player
 local get_safe_short_description = futil.get_safe_short_description
 
 local api = replacer.api
@@ -19,7 +20,7 @@ function api.copy(toolstack, player, pointed_thing)
 	local desc = get_safe_short_description(nodestack)
 
 	if not api.can_copy(player, pos, node) then
-		replacer.chat_send_player(player, "you cannot copy @1", desc)
+		dedupe_by_player(replacer.chat_send_player, player, "you cannot copy @1", desc)
 		return
 	end
 
@@ -67,7 +68,11 @@ function api.place(toolstack, player, pointed_thing)
 	end
 
 	if not api.check_tool(toolstack) then
-		replacer.chat_send_player(player, "placement failed: replacer not configured. use sneak+place to copy a node.")
+		dedupe_by_player(
+			replacer.chat_send_player,
+			player,
+			"placement failed: replacer not configured. use sneak+place to copy a node."
+		)
 		return
 	end
 
@@ -76,7 +81,7 @@ function api.place(toolstack, player, pointed_thing)
 	local to_place_stack = ItemStack(to_place_name)
 
 	if not to_place_stack:is_known() then
-		replacer.chat_send_player(player, "placement failed: @1 is not a known node", to_place_name)
+		dedupe_by_player(replacer.chat_send_player, player, "placement failed: @1 is not a known node", to_place_name)
 	end
 
 	local to_place_param2 = tool_meta:get_int("param2")
@@ -106,7 +111,12 @@ function api.place(toolstack, player, pointed_thing)
 			to_place_def = drop:get_definition()
 			to_place_node = { name = to_place_name, param2 = to_place_param2 }
 		else
-			replacer.chat_send_player(player, "placement failed: you have no @1 in your inventory.", to_place_desc)
+			dedupe_by_player(
+				replacer.chat_send_player,
+				player,
+				"placement failed: you have no @1 in your inventory.",
+				to_place_desc
+			)
 			return
 		end
 	end
@@ -114,7 +124,7 @@ function api.place(toolstack, player, pointed_thing)
 	local can_place, reason = api.can_place(player, pos, to_place_node)
 
 	if not can_place then
-		replacer.chat_send_player(player, "placement failed: @1.", reason)
+		dedupe_by_player(replacer.chat_send_player, player, "placement failed: @1.", reason)
 		return
 	end
 
@@ -177,7 +187,8 @@ function api.replace(toolstack, player, pointed_thing)
 	end
 
 	if not api.check_tool(toolstack) then
-		replacer.chat_send_player(
+		dedupe_by_player(
+			replacer.chat_send_player,
 			player,
 			"replacement failed: replacer not configured. use sneak+place to copy a node."
 		)
@@ -189,7 +200,7 @@ function api.replace(toolstack, player, pointed_thing)
 	local to_place_stack = ItemStack(to_place_name)
 
 	if not to_place_stack:is_known() then
-		replacer.chat_send_player(player, "placement failed: @1 is not a known node", to_place_name)
+		dedupe_by_player(replacer.chat_send_player, player, "placement failed: @1 is not a known node", to_place_name)
 	end
 
 	local to_place_param2 = tool_meta:get_int("param2")
@@ -220,7 +231,12 @@ function api.replace(toolstack, player, pointed_thing)
 			to_place_def = drop:get_definition()
 			to_place_node = { name = to_place_name, param2 = to_place_param2 }
 		else
-			replacer.chat_send_player(player, "placement failed: you have no @1 in your inventory.", to_place_desc)
+			dedupe_by_player(
+				replacer.chat_send_player,
+				player,
+				"placement failed: you have no @1 in your inventory.",
+				to_place_desc
+			)
 			return
 		end
 	end
@@ -228,7 +244,7 @@ function api.replace(toolstack, player, pointed_thing)
 	local can_replace, reason = api.can_replace(player, pos, current_node, to_place_node)
 
 	if not can_replace then
-		replacer.chat_send_player(player, "replacement failed: @1.", reason)
+		dedupe_by_player(replacer.chat_send_player, player, "replacement failed: @1.", reason)
 		return
 	end
 
@@ -268,7 +284,7 @@ function api.replace(toolstack, player, pointed_thing)
 		minetest.swap_node(pos, current_node)
 		minetest.get_meta(pos):from_table(old_meta)
 		player_inv:set_list("main", old_player_inventory)
-		replacer.chat_send_player(player, "replacement failed: removal failed for unknown reason.")
+		dedupe_by_player(replacer.chat_send_player, player, "replacement failed: removal failed for unknown reason.")
 		return
 	end
 
@@ -282,7 +298,8 @@ function api.replace(toolstack, player, pointed_thing)
 			player_inv:set_list("main", old_player_inventory)
 
 			replacer.log("error", "failed to remove %s from %s's inventory", to_place_stack:to_string(), player_name)
-			replacer.chat_send_player(
+			dedupe_by_player(
+				replacer.chat_send_player,
 				player,
 				"replacement failed: failed to remove @1 from your inventory",
 				to_place_desc
@@ -330,6 +347,11 @@ function api.replace(toolstack, player, pointed_thing)
 		minetest.get_meta(pos):from_table(old_meta)
 		player_inv:set_list("main", old_player_inventory)
 
-		replacer.chat_send_player(player, "replacement failed: could not place @1 for unknown reason", to_place_desc)
+		dedupe_by_player(
+			replacer.chat_send_player,
+			player,
+			"replacement failed: could not place @1 for unknown reason",
+			to_place_desc
+		)
 	end
 end

@@ -2,6 +2,7 @@ local f = string.format
 
 local S = inspector.S
 
+local dedupe_by_player = futil.dedupe_by_player
 local get_safe_short_description = futil.get_safe_short_description
 
 function inspector.get_luaentity_description(ent)
@@ -38,7 +39,7 @@ minetest.register_tool("inspector:inspector", {
 		end
 
 		if pointed_thing.type == "nothing" then
-			inspector.chat_send_player(player, "nothing")
+			dedupe_by_player(inspector.chat_send_player, player, "nothing")
 		elseif pointed_thing.type == "node" then
 			local under_pos = pointed_thing.under
 			local under_node = minetest.get_node(under_pos)
@@ -58,7 +59,8 @@ minetest.register_tool("inspector:inspector", {
 				light_level = minetest.get_node_light(pointed_thing.above, minetest.get_timeofday())
 			end
 
-			inspector.chat_send_player(
+			dedupe_by_player(
+				inspector.chat_send_player,
 				player,
 				"node @@@1: @2 param1=@3 param2=@4 light=@5",
 				minetest.pos_to_string(under_pos),
@@ -71,13 +73,19 @@ minetest.register_tool("inspector:inspector", {
 			local obj = pointed_thing.ref
 
 			if futil.is_player(obj) then
-				inspector.chat_send_player(player, "player: @1", obj:get_player_name())
+				dedupe_by_player(inspector.chat_send_player, player, "player: @1", obj:get_player_name())
 			else
 				local lua_entity = obj:get_luaentity()
 				if lua_entity then
-					inspector.chat_send_player(player, "luaentity: @1", inspector.get_luaentity_description(lua_entity))
+					dedupe_by_player(
+						inspector.chat_send_player,
+						player,
+						"luaentity: @1",
+						inspector.get_luaentity_description(lua_entity)
+					)
 				else
-					inspector.chat_send_player(
+					dedupe_by_player(
+						inspector.chat_send_player,
 						player,
 						"impossible. an object which is neither a player nor a lua entity?"
 					)

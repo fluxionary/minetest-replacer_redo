@@ -1,4 +1,4 @@
-futil.check_version({ year = 2023, month = 11, day = 9 }) -- remove_item_with_meta
+futil.check_version({ year = 2024, month = 2, day = 20 }, "dedupe")
 
 replacer = fmod.create()
 
