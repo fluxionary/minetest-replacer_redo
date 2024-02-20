@@ -15,7 +15,7 @@ function inspector.get_luaentity_description(ent)
 			ent.age or -math.huge,
 			ent.dropped_by or "???"
 		)
-	elseif ent.owner then
+	elseif ent.owner and ent.owner ~= "" then
 		if ent.protected or ent.dreamcatcher or ent.locked then
 			return f("%s owned by %s (protected)", ent.name, ent.owner)
 		else
@@ -46,17 +46,18 @@ minetest.register_tool("inspector:inspector", {
 			local under_name = under_node.name
 			local under_def = minetest.registered_nodes[under_name]
 
+			local tod = minetest.get_timeofday()
 			local desc, light_level
 			if under_def then
 				desc = get_safe_short_description(under_node.name)
 				if under_def.paramtype == "light" then
-					light_level = minetest.get_node_light(under_pos, minetest.get_timeofday())
+					light_level = minetest.get_node_light(under_pos, tod)
 				else
-					light_level = minetest.get_node_light(pointed_thing.above, minetest.get_timeofday())
+					light_level = minetest.get_node_light(pointed_thing.above, tod)
 				end
 			else
 				desc = f("%s (%s)", under_name, get_safe_short_description(under_name))
-				light_level = minetest.get_node_light(pointed_thing.above, minetest.get_timeofday())
+				light_level = minetest.get_node_light(pointed_thing.above, tod)
 			end
 
 			dedupe_by_player(

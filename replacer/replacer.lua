@@ -14,7 +14,7 @@ minetest.register_tool("replacer:replacer", {
 		end
 
 		if pointed_thing.type == "object" then
-			pointed_thing.ref:punch(player, 0, {})
+			pointed_thing.ref:punch(player, 0, toolstack:get_tool_capabilities())
 			return
 		end
 
